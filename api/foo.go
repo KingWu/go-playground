@@ -5,10 +5,10 @@ import (
 )
 
 // Demo print hello foo
-func Demo()  {
-    fmt.Println("hello foo")
+func Demo() {
+	fmt.Println("hello foo")
 }
 
-func demo()  {
+func demo() {
 	fmt.Println("hello foo222")
 }
