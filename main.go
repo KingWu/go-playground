@@ -83,7 +83,6 @@ func main() {
 	a, b := tryTry()
 	fmt.Println(a)
 	fmt.Println(b)
-	api.Demo()
 	// testgo.
 	// r := rect{width: 3, height: 4}
 	// c := circle{radius: 5}
