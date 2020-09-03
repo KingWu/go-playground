@@ -5,12 +5,13 @@ import (
 )
 
 type Employee struct {
-    Id          int32
+    ID          int32
     FirstName   string
     LastName    string
     BadgeNumber int32
 }
 
-func Demo()  {
-    fmt.Println("hello")
+// Demo2 print hello
+func Demo2()  {
+    fmt.Println("hello model")
 }

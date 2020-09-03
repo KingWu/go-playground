@@ -1,4 +1,4 @@
-module github.com/KingWu/go-playground
+module kw101/go-playground
 
 go 1.15
 

@@ -3,13 +3,12 @@ package main
 import (
     "fmt"
 		"math"
-		"github.com/KingWu/go-playground/src/model"
+		"kw101/go-playground/api"
 )
 
 // A Month specifies a month of the year (January = 1, ...).
 type Month int
 
-// s
 const (
     January Month = 1 + iota
     February
@@ -48,6 +47,10 @@ func (r *rect) changeSize(width, height float64) {
 // 	r.height = height
 // }
 
+func tryTry () (int, int) {
+	return 1, 3
+}
+
 func (c circle) area() float64 {
     return math.Pi * c.radius * c.radius
 }
@@ -74,7 +77,11 @@ func measureP(g geometry) {
 
 func main() {
 	model.Demo()
+	model.Demo2()
 	fmt.Println(February)
+	a, b := tryTry ()
+	fmt.Println(a)
+	fmt.Println(b)
 	// testgo.
     // r := rect{width: 3, height: 4}
 		// c := circle{radius: 5}
