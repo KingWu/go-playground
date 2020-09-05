@@ -4,10 +4,10 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"kw101/go-playground/api"
+	"kw101/go-playground/tools"
 )
 
-var _ = Describe("Api/Sum", func() {
+var _ = Describe("Sum", func() {
 	var (
 		p, q, m, n, sum1, sum2 int
 	)
