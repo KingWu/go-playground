@@ -1,5 +1,13 @@
 package main
 
+import (
+	"kw101/go-playground/server"
+)
+
+func main() {
+	server.Run()
+}
+
 // import (
 // 	"kw101/go-playground/api/graphql"
 // 	"log"

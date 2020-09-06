@@ -5,6 +5,6 @@ build:
 format:
 	go fmt
 run:
-	go run server.go
+	go run main.go
 test:
 	go test ./...

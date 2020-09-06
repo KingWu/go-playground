@@ -12,6 +12,7 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/urfave/negroni v1.0.0
 	github.com/vektah/gqlparser/v2 v2.0.1
+	golang.org/x/net v0.0.0-20200520004742-59133d7f0dd7
 	golang.org/x/sys v0.0.0-20200905004654-be1d3432aa8f // indirect
 	gopkg.in/tylerb/graceful.v1 v1.2.15
 )

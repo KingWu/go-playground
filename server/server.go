@@ -1,17 +1,33 @@
-package main
+package server
 
 import (
+	"golang.org/x/net/context"
 	"kw101/go-playground/config"
 	"net/http"
 	"log"
 	"time"
-	"kw101/go-playground/server"
 	"gopkg.in/tylerb/graceful.v1"
 )
 
-func main() {
-	middleware := server.BuildMiddleware()
-	middleware.UseHandler(server.CreateRouter())
+type ContextInjector struct {
+	ctx context.Context
+	h   http.Handler
+}
+
+func (ci *ContextInjector) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ci.h.ServeHTTP(w, r.WithContext(ci.ctx))
+}
+
+func Run() {
+	middleware := BuildMiddleware(
+		[]string{"http://foo.com", "http://foo.com:8080"},
+		config.Env() != config.Production,
+	)
+
+	// Inject var into context
+	ctx := context.WithValue(context.Background(), "db", "test")
+	middleware.UseHandler(&ContextInjector{ctx, CreateRouter()})
+
 	// Run server
 	log.Printf("Environment: %s", config.Env())
 

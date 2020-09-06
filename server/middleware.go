@@ -6,30 +6,26 @@ import (
 	"github.com/urfave/negroni"
 )
 
-func BuildMiddleware() *negroni.Negroni {
+func BuildMiddleware(allowedOrigins []string, debug bool) *negroni.Negroni {
 	middlewareController := negroni.New()
-	setUpMiddleware(middlewareController)
-	return middlewareController
-}
-
-func setUpMiddleware(middlewareController *negroni.Negroni) {
 	middlewareController.Use(negroni.NewRecovery())
 	middlewareController.Use(negroni.NewLogger())
 
 	supportGzip(middlewareController)
-	supportCors(middlewareController)
+	supportCors(middlewareController, allowedOrigins, debug)
+	
+	return middlewareController
 }
 
 func supportGzip(middlewareController *negroni.Negroni) {
 	middlewareController.Use(gzip.Gzip(gzip.DefaultCompression))
 }
 
-func supportCors(middlewareController *negroni.Negroni) {
+func supportCors(middlewareController *negroni.Negroni, allowedOrigins []string, debug bool) {
 	cors := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://foo.com", "http://foo.com:8080"},
+		AllowedOrigins: allowedOrigins,
     AllowCredentials: true,
-    // Enable Debugging for testing, consider disabling in production
-    Debug: true,
+    Debug: debug,
 	})
 	middlewareController.Use(cors)
 }
