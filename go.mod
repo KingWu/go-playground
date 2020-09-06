@@ -8,6 +8,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.1
+	github.com/phyber/negroni-gzip v0.0.0-20180113114010-ef6356a5d029
 	github.com/rs/cors v1.7.0
 	github.com/urfave/negroni v1.0.0
 	github.com/vektah/gqlparser/v2 v2.0.1
