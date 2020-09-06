@@ -15,23 +15,31 @@ import (
 
 const defaultPort = "8080"
 
-func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
+func buildMiddleware(middlewareController *negroni.Negroni) {
+	middlewareController.Use(negroni.NewRecovery())
+	middlewareController.Use(negroni.NewLogger())
+}
 
+func createRouter() *httprouter.Router{
 	router := httprouter.New()
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	router.HandlerFunc("GET", "/", playground.Handler("GraphQL playground", "/query"))
 	router.Handler("POST", "/query", srv)
+	return router
+}
+
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
 
 	middlewareController := negroni.New()
-	middlewareController.Use(negroni.NewRecovery())
-	middlewareController.Use(negroni.NewLogger())
-	middlewareController.UseHandler(router)
+	buildMiddleware(middlewareController)
+
+	middlewareController.UseHandler(createRouter())
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, middlewareController))
