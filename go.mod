@@ -8,6 +8,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.1
+	github.com/rs/cors v1.7.0
 	github.com/urfave/negroni v1.0.0
 	github.com/vektah/gqlparser/v2 v2.0.1
 	golang.org/x/sys v0.0.0-20200905004654-be1d3432aa8f // indirect
