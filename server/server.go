@@ -1,8 +1,10 @@
 package server
 
 import (
-	"golang.org/x/net/context"
 	"kw101/go-playground/config"
+	"context"
+	"os"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"net/http"
 	"log"
 	"time"
@@ -18,14 +20,25 @@ func (ci *ContextInjector) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ci.h.ServeHTTP(w, r.WithContext(ci.ctx))
 }
 
+func createDatabase(databaseUrl string) *pgxpool.Pool {
+	dbpool, err := pgxpool.Connect(context.Background(), databaseUrl)
+	if err != nil {
+		log.Panicf("Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+	return dbpool
+}
+
 func Run() {
+	pool := createDatabase(config.DatabaseUrl())
+
 	middleware := BuildMiddleware(
 		[]string{"http://foo.com", "http://foo.com:8080"},
 		config.Env() != config.Production,
 	)
 
 	// Inject var into context
-	ctx := context.WithValue(context.Background(), "db", "test")
+	ctx := context.WithValue(context.Background(), "db", pool)
 	middleware.UseHandler(&ContextInjector{ctx, CreateRouter()})
 
 	// Run server

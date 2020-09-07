@@ -29,3 +29,7 @@ func Env() string {
 	}
 	return env
 }
+
+func DatabaseUrl() string {
+	return os.Getenv("__BN_DATABASE_URL__")
+}
