@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  postgresql:
+    build: ./docker/Postgresql
+    image: intechlab/trigether:postgresql
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./docker/Postgresql/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=my-secret-pw
+    container_name: postgresql
+    deploy:
+      resources:
+        limits:
+          memory: 2g
