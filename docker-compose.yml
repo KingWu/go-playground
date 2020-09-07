@@ -9,6 +9,7 @@ services:
       - ./docker/Postgresql/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=my-secret-pw
+      - POSTGRES_DB=db
     container_name: postgresql
     deploy:
       resources:
