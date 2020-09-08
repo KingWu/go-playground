@@ -11,8 +11,10 @@ import (
 	// "fmt"
 	"kw101/go-playground/graph/generated"
 	"kw101/go-playground/graph/model"
-	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v4/pgxpool"
+
+	"github.com/doug-martin/goqu/v9"
+  _ "github.com/doug-martin/goqu/v9/dialect/postgres"
 )
 
 
@@ -27,16 +29,18 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 
 	// // Create user
 	// conn.Exec(context.Background(), sql)
-
-	sql, args, _ := sq.Insert("app.todo").
-		Columns("text").
-    Values(input.Text).
-		ToSql()
+	pgbuilder := goqu.Dialect("postgres")
+	sql, args, _ := pgbuilder.From("app.todo").Prepared(true).Insert().
+			Cols("text").
+			Vals(
+				goqu.Vals{input.Text},
+			).
+			ToSQL()
 
 	log.Print(sql)
 	log.Print(args)
 	
-	_, err := conn.Exec(context.Background(), sql, args)
+	_, err := conn.Exec(context.Background(), sql, args...)
 	log.Print(err)
 
 	todo := &model.Todo{

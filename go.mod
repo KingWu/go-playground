@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/99designs/gqlgen v0.12.2
-	github.com/Masterminds/squirrel v1.4.0
+	github.com/doug-martin/goqu/v9 v9.9.0
 	github.com/graph-gophers/graphql-go v0.0.0-20200819123640-3b5ddcd884ae
 	github.com/jackc/pgx/v4 v4.8.1
 	github.com/julienschmidt/httprouter v1.3.0
