@@ -21,11 +21,13 @@ func (ci *ContextInjector) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func createDatabase(databaseUrl string) *pgxpool.Pool {
+	log.Printf("**** Start Connect DB")
 	dbpool, err := pgxpool.Connect(context.Background(), databaseUrl)
 	if err != nil {
 		log.Panicf("Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
+	log.Printf("**** Connected DB")
 	return dbpool
 }
 

@@ -4,48 +4,37 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	// "os"
-	"log"
-	// "math/rand"
+	"fmt"
+	dbSql "kw101/go-playground/app/database/sql"
 	"context"
-	// "fmt"
 	"kw101/go-playground/graph/generated"
 	"kw101/go-playground/graph/model"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"log"
 
-	"github.com/doug-martin/goqu/v9"
-  _ "github.com/doug-martin/goqu/v9/dialect/postgres"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-
-
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	conn := ctx.Value("db").(*pgxpool.Pool) 
+	conn := ctx.Value("db").(*pgxpool.Pool)
 
-	// sql, _, _ := sq.Insert("app.user").
-	// 	Columns("name").
-	// 	Values("user " + input.UserID).
-	// 	ToSql()
+	// Create User
+	sql, args, _ := dbSql.CreateUser(input.Name)
+	var userID int
+	err := conn.QueryRow(context.Background(), sql, args...).Scan(&userID)
+	log.Printf("user id: %d", userID)
 
-	// // Create user
-	// conn.Exec(context.Background(), sql)
-	pgbuilder := goqu.Dialect("postgres")
-	sql, args, _ := pgbuilder.From("app.todo").Prepared(true).Insert().
-			Cols("text").
-			Vals(
-				goqu.Vals{input.Text},
-			).
-			ToSQL()
+	// Create ToDo
+	sql, args, _ = dbSql.CreateToDo(userID, input.Text)
 
 	log.Print(sql)
 	log.Print(args)
-	
-	_, err := conn.Exec(context.Background(), sql, args...)
+
+	_, err = conn.Exec(context.Background(), sql, args...)
 	log.Print(err)
 
 	todo := &model.Todo{
-		Text:   input.Text,
-		User: &model.User{ID: input.UserID, Name: "user " + input.UserID},
+		Text: input.Text,
+		User: &model.User{ID: fmt.Sprintf("%d", userID), Name: input.Name},
 	}
 	r.todos = append(r.todos, todo)
 	return todo, nil

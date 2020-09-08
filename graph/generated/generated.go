@@ -233,7 +233,7 @@ type Query {
 
 input NewTodo {
   text: String!
-  userId: String!
+  name: String!
 }
 
 type Mutation {
@@ -1731,11 +1731,11 @@ func (ec *executionContext) unmarshalInputNewTodo(ctx context.Context, obj inter
 			if err != nil {
 				return it, err
 			}
-		case "userId":
+		case "name":
 			var err error
 
-			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("userId"))
-			it.UserID, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
