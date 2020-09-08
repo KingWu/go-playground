@@ -20,7 +20,7 @@ type Query {
 
 input NewTodo {
   text: String!
-  userId: String!
+  name: String!
 }
 
 type Mutation {

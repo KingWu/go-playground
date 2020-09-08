@@ -4,20 +4,40 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	"log"
-	"math/rand"
-	"context"
 	"fmt"
+	dbSql "kw101/go-playground/app/database/sql"
+	"context"
 	"kw101/go-playground/graph/generated"
 	"kw101/go-playground/graph/model"
+	"log"
+
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	log.Printf("context db: %s", ctx.Value("db"))
+	conn := ctx.Value("db").(*pgxpool.Pool)
+
+	// Create User
+	sql, args, _ := dbSql.CreateUser(input.Name)
+	log.Print(sql)
+	log.Print(args)
+	
+	userID := 0
+	err := conn.QueryRow(context.Background(), sql, args...).Scan(&userID)
+	log.Printf("user id: %d", userID)
+
+	// Create ToDo
+	sql, args, _ = dbSql.CreateToDo(userID, input.Text)
+
+	log.Print(sql)
+	log.Print(args)
+
+	_, err = conn.Exec(context.Background(), sql, args...)
+	log.Print(err)
+
 	todo := &model.Todo{
-		Text:   input.Text,
-		ID:     fmt.Sprintf("T%d", rand.Int()),
-		User: &model.User{ID: input.UserID, Name: "user " + input.UserID},
+		Text: input.Text,
+		User: &model.User{ID: fmt.Sprintf("%d", userID), Name: input.Name},
 	}
 	r.todos = append(r.todos, todo)
 	return todo, nil

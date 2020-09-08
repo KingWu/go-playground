@@ -1,7 +1,7 @@
 package main
 
 import (
-	"kw101/go-playground/server"
+	"kw101/go-playground/app/server"
 )
 
 func main() {
