@@ -25,6 +25,7 @@ require (
 	github.com/vektah/gqlparser/v2 v2.0.1
 	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	golang.org/x/sys v0.0.0-20200905004654-be1d3432aa8f // indirect
+	golang.org/x/text v0.3.3
 	golang.org/x/tools v0.0.0-20200904185747-39188db58858 // indirect
 	gopkg.in/tylerb/graceful.v1 v1.2.15
 )

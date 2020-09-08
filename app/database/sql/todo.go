@@ -17,6 +17,7 @@ func CreateToDo(userID int, text string) (sql string, params []interface{}, err 
 //ListToDo A sql to list todo with  
 func ListToDo(limit uint) (sql string, params []interface{}, err error) {
 	return pgBuilder().From("app.todo").
+			Select("id", "text", "user_id").
 			Order(goqu.C("id").Desc()).
 			Limit(limit).
 			ToSQL()
