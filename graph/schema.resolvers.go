@@ -19,7 +19,10 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 
 	// Create User
 	sql, args, _ := dbSql.CreateUser(input.Name)
-	var userID int
+	log.Print(sql)
+	log.Print(args)
+	
+	userID := 0
 	err := conn.QueryRow(context.Background(), sql, args...).Scan(&userID)
 	log.Printf("user id: %d", userID)
 

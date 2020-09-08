@@ -11,5 +11,6 @@ func CreateUser(name string) (sql string, params []interface{}, err error) {
 			Vals(
 				goqu.Vals{ name },
 			).
+			Returning("id").
 			ToSQL()
 }
