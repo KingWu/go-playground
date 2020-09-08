@@ -1,6 +1,7 @@
 package server
 
 import (
+	"kw101/go-playground/graph"
 	"kw101/go-playground/config"
 	"context"
 	"os"
@@ -11,16 +12,7 @@ import (
 	"gopkg.in/tylerb/graceful.v1"
 )
 
-type ContextInjector struct {
-	ctx context.Context
-	h   http.Handler
-}
-
-func (ci *ContextInjector) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ci.h.ServeHTTP(w, r.WithContext(ci.ctx))
-}
-
-func createDatabase(databaseUrl string) *pgxpool.Pool {
+func connectDatabasePool(databaseUrl string) *pgxpool.Pool {
 	log.Printf("**** Start Connect DB")
 	dbpool, err := pgxpool.Connect(context.Background(), databaseUrl)
 	if err != nil {
@@ -32,7 +24,7 @@ func createDatabase(databaseUrl string) *pgxpool.Pool {
 }
 
 func Run() {
-	pool := createDatabase(config.DatabaseUrl())
+	pool := connectDatabasePool(config.DatabaseUrl())
 
 	middleware := BuildMiddleware(
 		[]string{"http://foo.com", "http://foo.com:8080"},
@@ -40,8 +32,8 @@ func Run() {
 	)
 
 	// Inject var into context
-	ctx := context.WithValue(context.Background(), "db", pool)
-	middleware.UseHandler(&ContextInjector{ctx, CreateRouter()})
+	resolver := &graph.Resolver{ DB: pool}
+	middleware.UseHandler(CreateRouter(resolver))
 
 	// Run server
 	log.Printf("Environment: %s", config.Env())

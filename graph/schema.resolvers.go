@@ -10,12 +10,10 @@ import (
 	"kw101/go-playground/graph/generated"
 	"kw101/go-playground/graph/model"
 	"log"
-
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	conn := ctx.Value("db").(*pgxpool.Pool)
+	conn := r.DB
 
 	// Create User
 	sql, args, _ := dbSql.CreateUser(input.Name)

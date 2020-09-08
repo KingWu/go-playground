@@ -9,10 +9,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func CreateRouter() *httprouter.Router{
+func CreateRouter(resolver *graph.Resolver) *httprouter.Router{
 	router := httprouter.New()
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: resolver}))
 
 	router.HandlerFunc("GET", "/", playground.Handler("GraphQL playground", "/query"))
 	router.HandlerFunc("GET", "/test", func(w http.ResponseWriter, r *http.Request) {

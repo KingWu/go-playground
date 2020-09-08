@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"github.com/jackc/pgx/v4/pgxpool"
 	"kw101/go-playground/graph/model"
 )
 
@@ -10,4 +11,5 @@ import (
 
 type Resolver struct{
 	todos []*model.Todo
+	DB *pgxpool.Pool
 }
