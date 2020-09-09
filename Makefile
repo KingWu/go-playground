@@ -8,3 +8,5 @@ run:
 	go run main.go
 test:
 	go test ./...
+gqlgen:
+	go run github.com/99designs/gqlgen generate

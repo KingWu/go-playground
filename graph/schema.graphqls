@@ -14,7 +14,7 @@ type User {
 }
 
 type Query {
-  todos: [Todo!]!
+  todos(limit: Int): [Todo!]!
 }
 
 input NewTodo {

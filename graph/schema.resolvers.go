@@ -42,9 +42,14 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	return todo, nil
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+func (r *queryResolver) Todos(ctx context.Context, limit *int) ([]*model.Todo, error) {
+	var qlimit uint = 10
+	if limit != nil  && *limit > 0 {
+		qlimit = uint(*limit)
+	}
+
 	conn := r.DB
-	sql, args, _ := dbSql.ListToDo(10)
+	sql, args, _ := dbSql.ListToDo(qlimit)
 	rows, _ := conn.Query(context.Background(), sql, args...)
 
 	var todos []*model.Todo
