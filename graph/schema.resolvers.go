@@ -4,8 +4,8 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	"github.com/vektah/gqlparser/v2/gqlerror"
-	"github.com/99designs/gqlgen/graphql"
+	// "github.com/vektah/gqlparser/v2/gqlerror"
+	// "github.com/99designs/gqlgen/graphql"
 	"context"
 	"fmt"
 	dbSql "kw101/go-playground/app/database/sql"
