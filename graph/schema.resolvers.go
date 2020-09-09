@@ -4,6 +4,8 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
+	"github.com/vektah/gqlparser/v2/gqlerror"
+	"github.com/99designs/gqlgen/graphql"
 	"context"
 	"fmt"
 	dbSql "kw101/go-playground/app/database/sql"
@@ -67,6 +69,15 @@ func (r *queryResolver) Todos(ctx context.Context, limit *int) ([]*model.Todo, e
 			UserID: fmt.Sprintf("%d", userID),
 		})
 	}
+
+	// Try error msg
+	// graphql.AddError(ctx, &gqlerror.Error{
+	// 	Message: "Error message",
+	// 	Extensions: map[string]interface{}{
+	// 		"code": "100001",
+	// 	},
+	// })
+
 	return todos, nil
 }
 
