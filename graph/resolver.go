@@ -2,6 +2,7 @@ package graph
 
 import (
 	"github.com/jackc/pgx/v4/pgxpool"
+	"kw101/go-playground/graph/model"
 )
 
 // This file will not be regenerated automatically.
@@ -10,4 +11,5 @@ import (
 
 type Resolver struct{
 	DB *pgxpool.Pool
+	UserLoader *model.UserLoader
 }

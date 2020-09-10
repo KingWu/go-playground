@@ -83,16 +83,17 @@ func (r *queryResolver) Todos(ctx context.Context, limit *int) ([]*model.Todo, e
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
 	log.Printf("resolver User: todo id [%s]", obj.UserID)
-	conn := r.DB
-	sql, args, _ := dbSql.GetUser(obj.UserID)
+	return r.UserLoader.Load(obj.UserID)
+	// conn := r.DB
+	// sql, args, _ := dbSql.GetUser(obj.UserID)
 
-	var id int
-	var name string
-	conn.QueryRow(context.Background(), sql, args...).Scan(&id, &name)
-	return &model.User{
-		ID:   fmt.Sprintf("%d", id),
-		Name: name,
-	}, nil
+	// var id int
+	// var name string
+	// conn.QueryRow(context.Background(), sql, args...).Scan(&id, &name)
+	// return &model.User{
+	// 	ID:   fmt.Sprintf("%d", id),
+	// 	Name: name,
+	// }, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

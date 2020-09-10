@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"kw101/go-playground/app/database/sql"
 	"kw101/go-playground/graph"
 	"kw101/go-playground/config"
 	"context"
@@ -10,6 +12,7 @@ import (
 	"log"
 	"time"
 	"gopkg.in/tylerb/graceful.v1"
+	"kw101/go-playground/graph/model"
 )
 
 func connectDatabasePool(databaseUrl string) *pgxpool.Pool {
@@ -31,8 +34,32 @@ func Run() {
 		config.Env() != config.Production,
 	)
 
+	userloaderConfig := model.UserLoaderConfig{
+		Fetch: func(keys []string) ([]*model.User, []error) {
+			
+			log.Print("Fetching User: todo id")
+			log.Print(keys)
+			sql, args, _ := sql.GetUsers(keys)
+
+			rows, _ := pool.Query(context.Background(), sql, args...)
+			var users []*model.User
+			for rows.Next() {
+				var id int
+				var name string
+				rows.Scan(&id, &name)
+				users = append(users, &model.User{
+					ID: fmt.Sprintf("%d", id),
+					Name: name,
+				})
+			}
+
+			return users, nil
+		},
+		Wait: 1 * time.Millisecond,
+		MaxBatch: 100,
+	}
 	// Inject var into context
-	resolver := &graph.Resolver{ DB: pool}
+	resolver := &graph.Resolver{ DB: pool, UserLoader: model.NewUserLoader(userloaderConfig)}
 	middleware.UseHandler(CreateRouter(resolver))
 
 	// Run server
