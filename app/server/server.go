@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/graph-gophers/dataloader"
 	"fmt"
 	"kw101/go-playground/app/database/sql"
 	"kw101/go-playground/graph"
@@ -33,33 +34,36 @@ func Run() {
 		[]string{"http://foo.com", "http://foo.com:8080"},
 		config.Env() != config.Production,
 	)
-
-	userloaderConfig := model.UserLoaderConfig{
-		Fetch: func(keys []string) ([]*model.User, []error) {
-			
-			log.Print("Fetching User: todo id")
-			log.Print(keys)
-			sql, args, _ := sql.GetUsers(keys)
-
-			rows, _ := pool.Query(context.Background(), sql, args...)
-			var users []*model.User
-			for rows.Next() {
-				var id int
-				var name string
-				rows.Scan(&id, &name)
-				users = append(users, &model.User{
+	
+	batchFn := func(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
+		log.Print("Fetching User2: todo id")
+		log.Print(keys.Keys())
+		sql, args, _ := sql.GetUsers(keys.Keys())
+		log.Print(sql)
+		log.Print(args)
+		rows, err := pool.Query(context.Background(), sql, args...)
+		log.Print(err)
+		var users []*dataloader.Result
+		for rows.Next() {
+			var id int
+			var name string
+			rows.Scan(&id, &name)
+			users = append(users, &dataloader.Result{
+				Data: &model.User{
 					ID: fmt.Sprintf("%d", id),
 					Name: name,
-				})
-			}
-
-			return users, nil
-		},
-		Wait: 1 * time.Millisecond,
-		MaxBatch: 100,
+				},
+			})
+		}
+		log.Print(users)
+		return users
 	}
+	
 	// Inject var into context
-	resolver := &graph.Resolver{ DB: pool, UserLoader: model.NewUserLoader(userloaderConfig)}
+	// cache := &dataloader.NoCache{}
+	resolver := &graph.Resolver{ DB: pool,
+		UserLoader: dataloader.NewBatchedLoader(batchFn, dataloader.WithClearCacheOnBatch()),
+	}
 	middleware.UseHandler(CreateRouter(resolver))
 
 	// Run server

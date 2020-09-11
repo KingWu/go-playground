@@ -20,6 +20,7 @@ func GetUsers(ids [] string) (sql string, params []interface{}, err error) {
 	return pgBuilder().From("app.user").
 			Select("id", "name").
 			Where(goqu.C("id").In(tempIds...)).
+			Order(goqu.C("id").Asc()).
 			ToSQL()
 }
 

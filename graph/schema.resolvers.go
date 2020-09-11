@@ -4,6 +4,7 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
+	"github.com/graph-gophers/dataloader"
 	// "github.com/vektah/gqlparser/v2/gqlerror"
 	// "github.com/99designs/gqlgen/graphql"
 	"context"
@@ -83,7 +84,10 @@ func (r *queryResolver) Todos(ctx context.Context, limit *int) ([]*model.Todo, e
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
 	log.Printf("resolver User: todo id [%s]", obj.UserID)
-	return r.UserLoader.Load(obj.UserID)
+	thunk := r.UserLoader.Load(context.TODO(), dataloader.StringKey(obj.UserID))
+	result, _ := thunk()
+	user, _ := result.(*model.User)
+	return user, nil
 	// conn := r.DB
 	// sql, args, _ := dbSql.GetUser(obj.UserID)
 
